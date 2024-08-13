@@ -36,5 +36,7 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+          DING_KEYWORD: ${{ secrets.DING_KEYWORD }}
+          DING_CALLBACK: ${{ secrets.DING_CALLBACK }}
         run: |
           python login_script.py
