@@ -11,6 +11,9 @@ import os
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
+DING_CALLBACK = os.getenv('DING_CALLBACK')
+DING_KEYWORD = os.getenv('DING_KEYWORD')
+
 def format_to_iso(date):
     return date.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -101,6 +104,7 @@ async def main():
         
     message += f'所有{serviceName}账号登录完成！'
     await send_telegram_message(message)
+    await send_ding_message(message)
     print(f'所有{serviceName}账号登录完成！')
 
 async def send_telegram_message(message):
@@ -128,6 +132,32 @@ async def send_telegram_message(message):
             print(f"发送消息到Telegram失败: {response.text}")
     except Exception as e:
         print(f"发送消息到Telegram时出错: {e}")
+
+async def send_ding_message(message):
+    url = f"https://oapi.dingtalk.com/robot/send?access_token={DING_CALLBACK}"  
+    payload = {
+      'actionCard': {
+        'title': DING_KEYWORD,
+        'text':
+          "![screenshot](https://www.serv00.com/static/ct8/img/logo.jpg) \n" +
+          "### 自动登录账户完成 \n" +
+           message,
+        'btnOrientation': "0",
+        'singleTitle': "阅读全文",
+        'singleURL': "https://www.serv00.com",
+      },
+      'msgtype': "actionCard",
+    }
+    
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        if response.status_code != 200:
+            print(f"发送消息到Ding失败: {response.text}")
+    except Exception as e:
+        print(f"发送消息到Ding时出错: {e}")
 
 if __name__ == '__main__':
     asyncio.run(main())
